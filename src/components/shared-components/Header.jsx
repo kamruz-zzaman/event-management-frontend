@@ -1,7 +1,7 @@
 const Header = () => {
   return (
     <div>
-      <nav className="bg-yellow-50 shadow shadow-yellow-100 w-100 px-8 md:px-auto">
+      <nav className="shadow  w-100 px-8 md:px-auto">
         <div className="md:h-16 h-28 mx-auto md:px-4 container flex items-center justify-between flex-wrap md:flex-nowrap">
           <div className="md:order-1">
             <img className="w-52" src="/src/assets/logo.png" alt="" />
