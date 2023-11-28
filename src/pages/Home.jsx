@@ -1,8 +1,11 @@
 import EventList from "../components/Events/EventList";
 import Footer from "../components/shared-components/Footer";
 import Header from "../components/shared-components/Header";
+import useAuthCheck from "../hooks/useAuthCheck";
 
 const Home = () => {
+  const isAuth = useAuthCheck();
+  console.log(isAuth);
   return (
     <>
       <Header />
