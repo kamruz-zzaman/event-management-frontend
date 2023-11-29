@@ -3,8 +3,8 @@ import "./App.css";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import Home from "./pages/Home";
-import CreateEvent from "./components/Events/CreateEvent";
 import AuthProtected from "./routes/AuthProtected";
+import CreateEvent from "./pages/CreateEvent";
 function App() {
   return (
     <>
