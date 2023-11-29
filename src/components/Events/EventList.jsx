@@ -1,9 +1,12 @@
 import React from "react";
 import RsvpButton from "../Button/RsvpButton";
 import CreateEventModal from "./CreateEventModal";
+import DatePicker from "react-datepicker";
 
 const EventList = () => {
   const [open, setOpen] = React.useState(false);
+  const [dateRange, setDateRange] = React.useState([null, null]);
+  const [startDate, endDate] = dateRange;
   return (
     <React.Fragment>
       <div className="flex items-center justify-center m-0 p-0">
@@ -32,7 +35,7 @@ const EventList = () => {
             </button>
           </div>
           <div className="w-full flex justify-center py-1 mb-4">
-            <div className="relative w-full">
+            <div className="relative w-full mr-5">
               <input
                 type="text"
                 className="w-full  bg-white py-2 pl-10 pr-4 rounded-lg focus:outline-none border-2 border-gray-100 focus:border-black transition-colors duration-300"
@@ -54,6 +57,19 @@ const EventList = () => {
                   />
                 </svg>
               </div>
+            </div>
+            <div>
+              <DatePicker
+                selectsRange={true}
+                startDate={startDate}
+                endDate={endDate}
+                onChange={(update) => {
+                  setDateRange(update);
+                }}
+                isClearable={true}
+                className="w-56 px-5 bg-white py-2  pr-4 rounded-lg focus:outline-none border-2 border-gray-100 focus:border-black transition-colors duration-300"
+                placeholderText="Select Date"
+              />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
