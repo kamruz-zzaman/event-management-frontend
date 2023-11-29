@@ -7,7 +7,6 @@ const useAuthCheck = () => {
   const [isAuth, setIsAuth] = useState(false);
   const state = useSelector((state) => state.auth);
   const { accessToken } = state || {};
-
   const {
     data: userData,
     isLoading,
@@ -18,7 +17,7 @@ const useAuthCheck = () => {
 
   useEffect(() => {
     if (!accessToken || isError) {
-      setIsAuth(true);
+      setIsAuth(false);
     }
 
     if (!isLoading && !isError && userData?.user?._id) {

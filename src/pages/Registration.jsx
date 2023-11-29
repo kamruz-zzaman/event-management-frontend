@@ -1,11 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../features/auth/authApi";
+import toast, { Toaster } from "react-hot-toast";
+import useAuthCheck from "../hooks/useAuthCheck";
 
 const Registration = () => {
-  const [register, { data: UserLoggedInData, isLoading, isError }] =
-    useRegisterMutation();
-  const [error, setError] = React.useState(false);
+  const isAuth = useAuthCheck();
+  const navigate = useNavigate();
+  const [register] = useRegisterMutation();
+  const [errors, setErrors] = React.useState({
+    first_name: "",
+    last_name: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirm_password: "",
+  });
   const [inputData, setInputData] = React.useState({
     first_name: "",
     last_name: "",
@@ -15,6 +25,12 @@ const Registration = () => {
     confirm_password: "",
   });
 
+  React.useEffect(() => {
+    if (isAuth) {
+      navigate("/");
+    }
+  }, [isAuth, navigate]);
+
   const handleInputChange = (event) => {
     setInputData((inputs) => ({
       ...inputs,
@@ -22,26 +38,81 @@ const Registration = () => {
     }));
   };
 
-  const registerUser = (e) => {
-    console.log("hello world");
-    e.preventDefault();
-    if (
-      inputData?.first_name !== "" &&
-      inputData?.last_name !== "" &&
-      inputData?.email !== "" &&
-      inputData?.password !== "" &&
-      inputData?.confirm_password !== "" &&
-      inputData?.phone !== ""
-    ) {
-      setError(false);
-      register(inputData);
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { ...errors };
+
+    // Validate first_name
+    if (!inputData.first_name.trim()) {
+      newErrors.first_name = "First name is required";
+      valid = false;
     } else {
-      setError(true);
+      newErrors.first_name = "";
+    }
+
+    // Validate last_name
+    if (!inputData.last_name.trim()) {
+      newErrors.last_name = "Last name is required";
+      valid = false;
+    } else {
+      newErrors.last_name = "";
+    }
+
+    // Validate phone
+    if (!inputData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+      valid = false;
+    } else {
+      newErrors.phone = "";
+    }
+
+    // Validate email
+    if (!inputData.email.trim()) {
+      newErrors.email = "Email is required";
+      valid = false;
+    } else {
+      newErrors.email = "";
+    }
+
+    // Validate password
+    if (!inputData.password.trim()) {
+      newErrors.password = "Password is required";
+      valid = false;
+    } else {
+      newErrors.password = "";
+    }
+
+    // Validate confirm_password
+    if (!inputData.confirm_password.trim()) {
+      newErrors.confirm_password = "Confirm password is required";
+      valid = false;
+    } else if (inputData.password !== inputData.confirm_password) {
+      newErrors.confirm_password = "Passwords do not match";
+      valid = false;
+    } else {
+      newErrors.confirm_password = "";
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const registerUser = (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      register(inputData).then((res) => {
+        if (res?.data) {
+          toast.success(`${res?.data?.message}`);
+          navigate("/");
+        }
+      });
     }
   };
 
   return (
     <React.Fragment>
+      <Toaster position="top-right" reverseOrder={false} />
       <section className="bg-white dark:bg-gray-900">
         <div className="flex justify-center min-h-screen">
           <div
@@ -78,8 +149,17 @@ const Registration = () => {
                     onChange={handleInputChange}
                     type="text"
                     placeholder="John"
-                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md ${
+                      errors.first_name
+                        ? "border-red-500"
+                        : "focus:border-blue-400"
+                    } dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40`}
                   />
+                  {errors.first_name && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.first_name}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -91,8 +171,17 @@ const Registration = () => {
                     onChange={handleInputChange}
                     type="text"
                     placeholder="Snow"
-                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md ${
+                      errors.last_name
+                        ? "border-red-500"
+                        : "focus:border-blue-400"
+                    } dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40`}
                   />
+                  {errors.last_name && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.last_name}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -104,8 +193,13 @@ const Registration = () => {
                     onChange={handleInputChange}
                     type="text"
                     placeholder="XXX-XX-XXXX-XXX"
-                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md ${
+                      errors.phone ? "border-red-500" : "focus:border-blue-400"
+                    } dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40`}
                   />
+                  {errors.phone && (
+                    <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                  )}
                 </div>
 
                 <div>
@@ -117,8 +211,13 @@ const Registration = () => {
                     onChange={handleInputChange}
                     type="email"
                     placeholder="johnsnow@example.com"
-                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md ${
+                      errors.email ? "border-red-500" : "focus:border-blue-400"
+                    } dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40`}
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                  )}
                 </div>
 
                 <div>
@@ -130,8 +229,17 @@ const Registration = () => {
                     onChange={handleInputChange}
                     type="password"
                     placeholder="Enter your password"
-                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md ${
+                      errors.password
+                        ? "border-red-500"
+                        : "focus:border-blue-400"
+                    } dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40`}
                   />
+                  {errors.password && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -143,8 +251,17 @@ const Registration = () => {
                     onChange={handleInputChange}
                     type="password"
                     placeholder="Enter your password"
-                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md ${
+                      errors.confirm_password
+                        ? "border-red-500"
+                        : "focus:border-blue-400"
+                    } dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40`}
                   />
+                  {errors.confirm_password && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.confirm_password}
+                    </p>
+                  )}
                 </div>
 
                 <button
