@@ -1,6 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useCreateEventMutation } from "../../features/event/eventApi";
+import toast from "react-hot-toast";
 
 const CreateEventForm = () => {
+  const navigate = useNavigate();
+  const [createEvent] = useCreateEventMutation();
   const [inputData, setInputData] = React.useState({
     title: "",
     description: "",
@@ -28,11 +33,14 @@ const CreateEventForm = () => {
     });
 
     if (Object.keys(validationErrors).length > 0) {
-      // There are validation errors, update the state
       setErrors(validationErrors);
     } else {
-      // No validation errors, submit the form or perform other actions
-      // Add your form submission logic here
+      createEvent(inputData).then((res) => {
+        if (res?.data?.success) {
+          toast.success(`Event Created!`);
+          navigate("/");
+        }
+      });
     }
   };
 

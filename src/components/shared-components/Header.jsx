@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuthCheck from "../../hooks/useAuthCheck";
 import { Menu, Transition } from "@headlessui/react";
 import React from "react";
@@ -10,6 +10,7 @@ const Header = () => {
   const navigate = useNavigate();
   const isAuth = useAuthCheck();
   const dispatch = useDispatch();
+  const location = useLocation();
   const { user } = useSelector((state) => state.auth);
 
   const handleLogut = () => {
@@ -32,11 +33,17 @@ const Header = () => {
           {isAuth && (
             <div className="text-gray-500 order-3 w-full md:w-auto md:order-2">
               <ul className="flex font-semibold justify-between">
-                <li className="md:px-4 md:py-2 text-indigo-500">
+                <li className="md:px-4 md:py-2 hover:text-indigo-400">
                   <a href="#">Profile</a>
                 </li>
-                <li className="md:px-4 md:py-2 hover:text-indigo-400">
-                  <Link to={"create/event"}>Create Event</Link>
+                <li
+                  className={`md:px-4 md:py-2 ${
+                    location.pathname === "/create/event"
+                      ? "text-indigo-500"
+                      : "hover:text-indigo-400"
+                  } `}
+                >
+                  <Link to={"/create/event"}>Create Event</Link>
                 </li>
               </ul>
             </div>

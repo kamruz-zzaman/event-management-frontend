@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import RsvpButton from "../Button/RsvpButton";
 import DatePicker from "react-datepicker";
+import { useGetAllEventsQuery } from "../../features/event/eventApi";
+import dayjs from "dayjs";
 
 const EventList = () => {
+  const { data } = useGetAllEventsQuery();
   const [dateRange, setDateRange] = React.useState([null, null]);
   const [startDate, endDate] = dateRange;
+  const [eventData, setEventData] = React.useState([]);
+  useEffect(() => {
+    setEventData(data?.events);
+  }, [data?.events]);
+
   return (
     <React.Fragment>
       <div className="flex items-center justify-center m-0 p-0">
@@ -51,18 +59,16 @@ const EventList = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-            {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((data, i) => (
+            {eventData?.map((data, i) => (
               <div
                 key={i}
                 className=" bg-white/20 p-6 rounded-md shadow-sm cursor-pointer border-2 border-gray-50 hover:border-black hover:border-2 transition-colors duration-300"
               >
-                <h2 className="text-xl font-semibold mb-4">Event 1</h2>
+                <h2 className="text-xl font-semibold mb-4">{data?.title}</h2>
                 <p className="text-gray-700">
-                  Start at 14th December 2023 05.23pm
+                  Start at {dayjs(data.start_time).format("MMM D, YYYY h:mm A")}
                 </p>
-                <p className="text-gray-700">
-                  Rabindraw Sarabar, Dhanmondi, Dhaka-1207, Bangladesh
-                </p>
+                <p className="text-gray-700">{data?.location}</p>
                 <div className="mt-5">
                   <RsvpButton onClick={() => ""} />
                 </div>
