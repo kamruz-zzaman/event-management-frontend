@@ -3,8 +3,8 @@ import { apiSlice } from "../api/apiSlice";
 export const eventApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllEvents: builder.query({
-      query: ({ search, startDate, endDate }) => ({
-        url: `/event?search=${search}&startDate=${startDate}&endDate=${endDate}`,
+      query: ({ search, startDate, endDate, page }) => ({
+        url: `/event?page=${page}&search=${search}&startDate=${startDate}&endDate=${endDate}`,
       }),
       providesTags: ["Event"],
     }),

@@ -8,8 +8,10 @@ const EventList = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [dateRange, setDateRange] = React.useState([null, null]);
   const [startDate, endDate] = dateRange;
-  const [eventData, setEventData] = React.useState({});
-  const { data } = useGetAllEventsQuery({
+  const [eventData, setEventData] = React.useState({ events: [] });
+  const [page, setPage] = React.useState(1);
+
+  const { data, isFetching } = useGetAllEventsQuery({
     search: searchQuery,
     startDate:
       startDate !== null
@@ -17,11 +19,36 @@ const EventList = () => {
         : null,
     endDate:
       endDate !== null ? dayjs(endDate).format("YYYY-MM-DD HH:mm:ss") : null,
+    page: page,
   });
+
   useEffect(() => {
-    setEventData(data?.data);
+    if (data?.data) {
+      setEventData((prevData) => ({
+        events: [...prevData.events, ...data.data.events],
+      }));
+    }
   }, [data?.data]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop ===
+          document.documentElement.offsetHeight &&
+        !isFetching &&
+        page < data?.data?.totalPages
+      ) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isFetching, page, data]);
+  console.log(isFetching);
   return (
     <React.Fragment>
       <div className="flex items-center justify-center m-0 p-0">
