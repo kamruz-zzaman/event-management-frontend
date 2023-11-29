@@ -1,10 +1,8 @@
 import React from "react";
 import RsvpButton from "../Button/RsvpButton";
-import CreateEventModal from "./CreateEventModal";
 import DatePicker from "react-datepicker";
 
 const EventList = () => {
-  const [open, setOpen] = React.useState(false);
   const [dateRange, setDateRange] = React.useState([null, null]);
   const [startDate, endDate] = dateRange;
   return (
@@ -12,27 +10,7 @@ const EventList = () => {
       <div className="flex items-center justify-center m-0 p-0">
         <div className="w-full sm:w-11/12 md:w-full lg:w-full bg-white">
           <div className="w-full flex justify-between items-center py-3">
-            <h2 className="text-xl font-semibold">Events</h2>
-            <button
-              id="openModalBtn"
-              className="flex items-center bg-black  border border-black text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
-            >
-              <svg
-                className="w-4 h-4 mr-2 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                ></path>
-              </svg>
-              <p className="text-white">New Event</p>
-            </button>
+            <h2 className="text-2xl font-semibold">Events</h2>
           </div>
           <div className="w-full flex justify-center py-1 mb-4">
             <div className="relative w-full mr-5">
@@ -86,14 +64,13 @@ const EventList = () => {
                   Rabindraw Sarabar, Dhanmondi, Dhaka-1207, Bangladesh
                 </p>
                 <div className="mt-5">
-                  <RsvpButton onClick={() => setOpen(true)} />
+                  <RsvpButton onClick={() => ""} />
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-      <CreateEventModal open={open} setOpen={setOpen} />
     </React.Fragment>
   );
 };

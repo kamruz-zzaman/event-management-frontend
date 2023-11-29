@@ -11,6 +11,7 @@ const Header = () => {
   const isAuth = useAuthCheck();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+
   const handleLogut = () => {
     localStorage.clear();
     toast.success(`Logged out!`);
@@ -18,7 +19,7 @@ const Header = () => {
     navigate("/");
   };
   return (
-    <div>
+    <React.Fragment>
       <Toaster position="top-right" reverseOrder={false} />
       <nav className="shadow px-8 md:px-20">
         <div className="md:h-16 h-28 mx-auto container flex items-center justify-between flex-wrap md:flex-nowrap">
@@ -35,7 +36,7 @@ const Header = () => {
                   <a href="#">Profile</a>
                 </li>
                 <li className="md:px-4 md:py-2 hover:text-indigo-400">
-                  <a href="#">Create Event</a>
+                  <Link to={"create/event"}>Create Event</Link>
                 </li>
               </ul>
             </div>
@@ -97,7 +98,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
-    </div>
+    </React.Fragment>
   );
 };
 
