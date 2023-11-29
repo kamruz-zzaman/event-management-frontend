@@ -3,6 +3,9 @@ import RsvpButton from "../Button/RsvpButton";
 import DatePicker from "react-datepicker";
 import { useGetAllEventsQuery } from "../../features/event/eventApi";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
+import EventLoading from "../Loader/EventLoading";
+import Calender from "../Calender/Calender";
 
 const EventList = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -24,20 +27,27 @@ const EventList = () => {
 
   useEffect(() => {
     if (data?.data) {
-      setEventData((prevData) => ({
-        events: [...prevData.events, ...data.data.events],
-      }));
+      if (searchQuery || startDate || endDate) {
+        setEventData(data.data);
+      } else {
+        if (page > 1) {
+          setEventData((prevData) => ({
+            events: [...prevData.events, ...data.data.events],
+          }));
+        } else {
+          setEventData(data.data);
+        }
+      }
     }
-  }, [data?.data]);
+  }, [endDate, searchQuery, startDate, data?.data]);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop ===
-          document.documentElement.offsetHeight &&
-        !isFetching &&
-        page < data?.data?.totalPages
-      ) {
+      const scrolledToBottom =
+        window.innerHeight + document.documentElement.scrollTop + 1 >=
+        document.documentElement.offsetHeight;
+
+      if (scrolledToBottom && !isFetching && page < data?.data?.totalPages) {
         setPage((prevPage) => prevPage + 1);
       }
     };
@@ -48,7 +58,7 @@ const EventList = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [isFetching, page, data]);
-  console.log(isFetching);
+
   return (
     <React.Fragment>
       <div className="flex items-center justify-center m-0 p-0">
@@ -59,7 +69,10 @@ const EventList = () => {
           <div className="w-full flex justify-center py-1 mb-4">
             <div className="relative w-full mr-5">
               <input
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setPage(1);
+                }}
                 type="text"
                 className="w-full  bg-white py-2 pl-10 pr-4 rounded-lg focus:outline-none border-2 border-gray-100 focus:border-black transition-colors duration-300"
                 placeholder="Search..."
@@ -88,6 +101,7 @@ const EventList = () => {
                 endDate={endDate}
                 onChange={(update) => {
                   setDateRange(update);
+                  setPage(1);
                 }}
                 isClearable={true}
                 className="w-56 px-5 bg-white py-2  pr-4 rounded-lg focus:outline-none border-2 border-gray-100 focus:border-black transition-colors duration-300"
@@ -97,20 +111,26 @@ const EventList = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
             {eventData?.events?.map((data, i) => (
-              <div
-                key={i}
-                className=" bg-white/20 p-6 rounded-md shadow-sm cursor-pointer border-2 border-gray-50 hover:border-black hover:border-2 transition-colors duration-300"
-              >
-                <h2 className="text-xl font-semibold mb-4">{data?.title}</h2>
-                <p className="text-gray-700">
-                  Start at {dayjs(data.start_time).format("MMM D, YYYY h:mm A")}
-                </p>
-                <p className="text-gray-700">{data?.location}</p>
-                <div className="mt-5">
-                  <RsvpButton onClick={() => ""} />
+              <Link key={i} to={`event/details/${data._id}`}>
+                <div className=" bg-white/20 p-6 rounded-md shadow-sm cursor-pointer border-2 border-gray-50 hover:border-black hover:border-2 transition-colors duration-300">
+                  <Calender dateValue={new Date(data?.start_time)} />
+                  <div>
+                    <h2 className="text-xl font-semibold mb-4">
+                      {data?.title}
+                    </h2>
+                    <p className="text-gray-700">
+                      Start at{" "}
+                      {dayjs(data.start_time).format("MMM D, YYYY h:mm A")}
+                    </p>
+                    <p className="text-gray-700">{data?.location}</p>
+                    <div className="mt-5">
+                      <RsvpButton onClick={() => ""} />
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
+            {isFetching && <EventLoading />}
           </div>
         </div>
       </div>

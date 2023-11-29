@@ -6,7 +6,7 @@ import useAuthCheck from "../hooks/useAuthCheck";
 
 const Home = () => {
   const isAuth = useAuthCheck();
-  console.log(isAuth);
+  // console.log(isAuth);
   return (
     <React.Fragment>
       <Header />
