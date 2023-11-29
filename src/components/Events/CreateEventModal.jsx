@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { Dialog, Transition } from "@headlessui/react";
 import React from "react";
 
@@ -64,3 +65,8 @@ const CreateEventModal = ({ open, setOpen }) => {
 };
 
 export default CreateEventModal;
+
+CreateEventModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
+};

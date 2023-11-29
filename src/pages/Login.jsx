@@ -1,8 +1,80 @@
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../features/auth/authApi";
+import toast, { Toaster } from "react-hot-toast";
+import useAuthCheck from "../hooks/useAuthCheck";
 
 const Login = () => {
+  const isAuth = useAuthCheck();
+  const [login] = useLoginMutation();
+  const navigate = useNavigate();
+  const [inputData, setInputData] = React.useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = React.useState({
+    email: "",
+    password: "",
+  });
+
+  React.useEffect(() => {
+    if (isAuth) {
+      navigate("/");
+    }
+  }, [isAuth, navigate]);
+
+  const handleInputChange = (event) => {
+    setInputData((inputs) => ({
+      ...inputs,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { ...errors };
+
+    // Validate email
+    if (!inputData.email.trim()) {
+      newErrors.email = "Email is required";
+      valid = false;
+    } else {
+      newErrors.email = "";
+    }
+
+    // Validate password
+    if (!inputData.password.trim()) {
+      newErrors.password = "Password is required";
+      valid = false;
+    } else {
+      newErrors.password = "";
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      login(inputData)
+        .then((res) => {
+          if (res?.data) {
+            toast.success(`${res?.data?.message}`);
+            navigate("/");
+          } else {
+            toast.error(`${res?.error?.data?.error}`);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   return (
-    <div>
+    <React.Fragment>
+      <Toaster position="top-right" reverseOrder={false} />
       <section className="bg-white dark:bg-gray-900">
         <div className="flex justify-center min-h-screen">
           <div
@@ -25,26 +97,47 @@ const Login = () => {
                 Enter your credentials to access your account.
               </p>
 
-              <form className="grid grid-cols-1 gap-6 mt-8">
+              <form
+                onSubmit={handleLogin}
+                className="grid grid-cols-1 gap-6 mt-8"
+              >
                 <div>
                   <label className="block mb-2 text-sm text-gray-600 dark:text-gray-200">
                     Email address
                   </label>
                   <input
+                    name="email"
+                    onChange={handleInputChange}
                     type="email"
                     placeholder="johnsnow@example.com"
-                    className="block w-full md:w-1/2 px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className={`block w-full md:w-1/2 px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md ${
+                      errors.email ? "border-red-500" : "focus:border-blue-400"
+                    } dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40`}
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block mb-2 text-sm text-gray-600 dark:text-gray-200">
                     Password
                   </label>
                   <input
+                    name="password"
+                    onChange={handleInputChange}
                     type="password"
                     placeholder="Enter your password"
-                    className="block w-full md:w-1/2 px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className={`block w-full md:w-1/2 px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md ${
+                      errors.password
+                        ? "border-red-500"
+                        : "focus:border-blue-400"
+                    } dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40`}
                   />
+                  {errors.password && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
 
                 <button className="flex items-center justify-between w-full md:w-1/2 px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-md hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
@@ -74,7 +167,7 @@ const Login = () => {
           </div>
         </div>
       </section>
-    </div>
+    </React.Fragment>
   );
 };
 

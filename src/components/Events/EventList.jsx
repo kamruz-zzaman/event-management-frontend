@@ -8,7 +8,7 @@ const EventList = () => {
     <React.Fragment>
       <div className="flex items-center justify-center m-0 p-0">
         <div className="w-full sm:w-11/12 md:w-full lg:w-full bg-white">
-          <div className="w-full flex justify-between items-center p-3">
+          <div className="w-full flex justify-between items-center py-3">
             <h2 className="text-xl font-semibold">Events</h2>
             <button
               id="openModalBtn"
@@ -31,7 +31,7 @@ const EventList = () => {
               <p className="text-white">New Event</p>
             </button>
           </div>
-          <div className="w-full flex justify-center p-1 mb-4">
+          <div className="w-full flex justify-center py-1 mb-4">
             <div className="relative w-full">
               <input
                 type="text"
