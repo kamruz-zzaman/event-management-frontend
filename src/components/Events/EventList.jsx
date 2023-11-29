@@ -3,11 +3,14 @@ import RsvpButton from "../Button/RsvpButton";
 import DatePicker from "react-datepicker";
 import { useGetAllEventsQuery } from "../../features/event/eventApi";
 import dayjs from "dayjs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EventLoading from "../Loader/EventLoading";
 import Calender from "../Calender/Calender";
+import useAuthCheck from "../../hooks/useAuthCheck";
 
 const EventList = () => {
+  const isAuth = useAuthCheck();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [dateRange, setDateRange] = React.useState([null, null]);
   const [startDate, endDate] = dateRange;
@@ -111,24 +114,37 @@ const EventList = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
             {eventData?.events?.map((data, i) => (
-              <Link key={i} to={`event/details/${data._id}`}>
-                <div className=" bg-white/20 p-6 rounded-md shadow-sm cursor-pointer border-2 border-gray-50 hover:border-black hover:border-2 transition-colors duration-300">
-                  <Calender dateValue={new Date(data?.start_time)} />
+              <div
+                key={i}
+                className=" bg-white/20 p-6 rounded-md shadow-sm cursor-pointer border-2 border-gray-50 hover:border-black hover:border-2 transition-colors duration-300"
+              >
+                <Link to={`event/details/${data._id}`}>
                   <div>
-                    <h2 className="text-xl font-semibold mb-4">
-                      {data?.title}
-                    </h2>
-                    <p className="text-gray-700">
-                      Start at{" "}
-                      {dayjs(data.start_time).format("MMM D, YYYY h:mm A")}
-                    </p>
-                    <p className="text-gray-700">{data?.location}</p>
+                    <Calender dateValue={new Date(data?.start_time)} />
+                    <div>
+                      <h2 className="text-xl font-semibold mb-4">
+                        {data?.title}
+                      </h2>
+                      <p className="text-gray-700">
+                        Start at{" "}
+                        {dayjs(data.start_time).format("MMM D, YYYY h:mm A")}
+                      </p>
+                      <p className="text-gray-700">{data?.location}</p>
+                    </div>
+                  </div>
+                </Link>
+                <div>
+                  {isAuth ? (
                     <div className="mt-5">
                       <RsvpButton onClick={() => ""} />
                     </div>
-                  </div>
+                  ) : (
+                    <div className="mt-5">
+                      <RsvpButton onClick={() => navigate("/login")} />
+                    </div>
+                  )}
                 </div>
-              </Link>
+              </div>
             ))}
             {isFetching && <EventLoading />}
           </div>

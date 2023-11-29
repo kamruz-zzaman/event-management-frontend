@@ -25,12 +25,22 @@ export const eventApi = apiSlice.injectEndpoints({
     }),
 
     editEvent: builder.mutation({
-      query: ({ data, id }) => {
-        console.log(data, id);
+      query: ({ inputData, id }) => {
         return {
           url: `/event/update/${id}`,
           method: "PATCH",
-          body: data,
+          body: inputData,
+        };
+      },
+      providesTags: ["Event"],
+    }),
+
+    updateRsvp: builder.mutation({
+      query: ({ inputData, id }) => {
+        return {
+          url: `/event/update-rsvp/${id}`,
+          method: "PUT",
+          body: inputData,
         };
       },
       providesTags: ["Event"],
@@ -42,5 +52,6 @@ export const {
   useCreateEventMutation,
   useEditEventMutation,
   useGetAllEventsQuery,
-  useGetEventDetailsQuery
+  useGetEventDetailsQuery,
+  useUpdateRsvpMutation
 } = eventApi;

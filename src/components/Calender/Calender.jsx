@@ -45,7 +45,6 @@ export default function Calender({ dateValue }) {
   return (
     <div className="w-full my-2">
       <Calendar
-        onChange={setValue}
         value={value}
         className={"customizeCalender"}
         prev2Label={null}

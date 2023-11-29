@@ -2,8 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCreateEventMutation } from "../../features/event/eventApi";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const CreateEventForm = () => {
+  const state = useSelector((state) => state.auth);
+  const { user } = state;
+
   const navigate = useNavigate();
   const [createEvent, { isLoading }] = useCreateEventMutation();
   const [inputData, setInputData] = React.useState({
@@ -35,7 +39,7 @@ const CreateEventForm = () => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      createEvent(inputData).then((res) => {
+      createEvent({ ...inputData, user_id: user?._id }).then((res) => {
         if (res?.data?.success) {
           toast.success(`Event Created!`);
           navigate("/");
