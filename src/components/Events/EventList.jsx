@@ -5,13 +5,22 @@ import { useGetAllEventsQuery } from "../../features/event/eventApi";
 import dayjs from "dayjs";
 
 const EventList = () => {
-  const { data } = useGetAllEventsQuery();
+  const [searchQuery, setSearchQuery] = React.useState("");
   const [dateRange, setDateRange] = React.useState([null, null]);
   const [startDate, endDate] = dateRange;
-  const [eventData, setEventData] = React.useState([]);
+  const [eventData, setEventData] = React.useState({});
+  const { data } = useGetAllEventsQuery({
+    search: searchQuery,
+    startDate:
+      startDate !== null
+        ? dayjs(startDate).format("YYYY-MM-DD HH:mm:ss")
+        : null,
+    endDate:
+      endDate !== null ? dayjs(endDate).format("YYYY-MM-DD HH:mm:ss") : null,
+  });
   useEffect(() => {
-    setEventData(data?.events);
-  }, [data?.events]);
+    setEventData(data?.data);
+  }, [data?.data]);
 
   return (
     <React.Fragment>
@@ -23,6 +32,7 @@ const EventList = () => {
           <div className="w-full flex justify-center py-1 mb-4">
             <div className="relative w-full mr-5">
               <input
+                onChange={(e) => setSearchQuery(e.target.value)}
                 type="text"
                 className="w-full  bg-white py-2 pl-10 pr-4 rounded-lg focus:outline-none border-2 border-gray-100 focus:border-black transition-colors duration-300"
                 placeholder="Search..."
@@ -59,7 +69,7 @@ const EventList = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-            {eventData?.map((data, i) => (
+            {eventData?.events?.map((data, i) => (
               <div
                 key={i}
                 className=" bg-white/20 p-6 rounded-md shadow-sm cursor-pointer border-2 border-gray-50 hover:border-black hover:border-2 transition-colors duration-300"
