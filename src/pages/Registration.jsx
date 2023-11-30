@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../features/auth/authApi";
 import toast, { Toaster } from "react-hot-toast";
 import useAuthCheck from "../hooks/useAuthCheck";
+import Logo from "../assets/logo.png";
+import AuthCover from "../assets/authcover.jpg";
 
 const Registration = () => {
   const isAuth = useAuthCheck();
@@ -118,14 +120,14 @@ const Registration = () => {
           <div
             className="hidden bg-no-repeat bg-center lg:block lg:w-2/5"
             style={{
-              backgroundImage: "url('/src/assets/authcover.jpg')",
+              backgroundImage: `url('${AuthCover}')`,
             }}
           ></div>
 
           <div className="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
             <div className="w-full">
               <Link to={"/"}>
-                <img className="w-72 mb-10" src="/src/assets/logo.png" alt="" />
+                <img className="w-72 mb-10" src={Logo} alt="" />
               </Link>
               <h1 className="text-2xl font-semibold tracking-wider text-gray-800 capitalize dark:text-white">
                 Get your free account now.
