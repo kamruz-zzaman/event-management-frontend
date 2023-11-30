@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import AuthProtected from "./routes/AuthProtected";
 import CreateEvent from "./pages/CreateEvent";
 import EventDetails from "./pages/EventDetails";
+import Profile from "./pages/Profile";
 function App() {
   return (
     <>
@@ -19,6 +20,14 @@ function App() {
           element={
             <AuthProtected>
               <CreateEvent />
+            </AuthProtected>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <AuthProtected>
+              <Profile />
             </AuthProtected>
           }
         />

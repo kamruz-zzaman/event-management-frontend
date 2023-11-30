@@ -22,7 +22,7 @@ const Header = () => {
   return (
     <React.Fragment>
       <Toaster position="top-right" reverseOrder={false} />
-      <nav className="shadow px-8 md:px-20">
+      <nav className="shadow px-8 md:px-20 bg-gray-50">
         <div className="md:h-16 h-28 mx-auto container flex items-center justify-between flex-wrap md:flex-nowrap">
           <div className="md:order-1">
             <Link to={"/"}>
@@ -33,8 +33,14 @@ const Header = () => {
           {isAuth && (
             <div className="text-gray-500 order-3 w-full md:w-auto md:order-2">
               <ul className="flex font-semibold justify-between">
-                <li className="md:px-4 md:py-2 hover:text-indigo-400">
-                  <a href="#">Profile</a>
+                <li
+                  className={`md:px-4 md:py-2 ${
+                    location.pathname === "/profile"
+                      ? "text-indigo-500"
+                      : "hover:text-indigo-400"
+                  } `}
+                >
+                  <Link to={"/profile"}>Profile</Link>
                 </li>
                 <li
                   className={`md:px-4 md:py-2 ${
