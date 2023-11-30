@@ -82,7 +82,7 @@ const Details = ({ data, setOpen, refetch }) => {
           <p>{data?.description}</p>
           <div className="flex items-center mt-10">
             {user ? (
-              <div className="mr-10">
+              <div className="mr-5">
                 {data?.rsvp?.includes(user?._id) ? (
                   <button
                     onClick={() => handleRsvp(data)}
@@ -100,7 +100,7 @@ const Details = ({ data, setOpen, refetch }) => {
               </div>
             )}
 
-            {user?.id === data?.user_id && (
+            {user?._id === data?.user_id && (
               <div>
                 <button
                   onClick={() => setOpen(true)}
@@ -110,7 +110,7 @@ const Details = ({ data, setOpen, refetch }) => {
                 </button>
               </div>
             )}
-            <div className="ml-10">
+            <div className="ml-5">
               <button
                 onClick={() => setIsOpen(true)}
                 className="cursor-pointer"
