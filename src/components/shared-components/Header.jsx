@@ -5,7 +5,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import { userLoggedOut } from "../../features/auth/authSlice";
-
+import Logo from "../../assets/logo.png";
 const Header = () => {
   const navigate = useNavigate();
   const isAuth = useAuthCheck();
@@ -26,7 +26,7 @@ const Header = () => {
         <div className="md:h-16 h-28 mx-auto container flex items-center justify-between flex-wrap md:flex-nowrap">
           <div className="md:order-1">
             <Link to={"/"}>
-              <img className="w-52" src="/src/assets/logo.png" alt="" />
+              <img className="w-52" src={Logo} alt="" />
             </Link>
           </div>
 
