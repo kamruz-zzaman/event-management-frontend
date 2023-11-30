@@ -100,7 +100,7 @@ const EventList = () => {
   return (
     <React.Fragment>
       <div className="flex items-center justify-center m-0 p-0">
-        <div className="w-full sm:w-11/12 md:w-full lg:w-full bg-white">
+        <div className="w-full sm:w-11/12 md:w-full lg:w-full  bg-white">
           <div className="w-full flex justify-between items-center py-3">
             <h2 className="text-2xl font-semibold">Events</h2>
           </div>
