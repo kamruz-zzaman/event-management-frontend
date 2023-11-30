@@ -1,23 +1,30 @@
 import React, { useEffect } from "react";
 import RsvpButton from "../Button/RsvpButton";
 import DatePicker from "react-datepicker";
-import { useGetAllEventsQuery } from "../../features/event/eventApi";
+import {
+  useGetAllEventsQuery,
+  useUpdateRsvpMutation,
+} from "../../features/event/eventApi";
 import dayjs from "dayjs";
 import { Link, useNavigate } from "react-router-dom";
 import EventLoading from "../Loader/EventLoading";
 import Calender from "../Calender/Calender";
 import useAuthCheck from "../../hooks/useAuthCheck";
+import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const EventList = () => {
+  const state = useSelector((state) => state.auth);
   const isAuth = useAuthCheck();
   const navigate = useNavigate();
+  const { user } = state;
   const [searchQuery, setSearchQuery] = React.useState("");
   const [dateRange, setDateRange] = React.useState([null, null]);
   const [startDate, endDate] = dateRange;
   const [eventData, setEventData] = React.useState({ events: [] });
   const [page, setPage] = React.useState(1);
-
-  const { data, isFetching } = useGetAllEventsQuery({
+  const [updateRsvp] = useUpdateRsvpMutation();
+  const { data, isFetching, refetch } = useGetAllEventsQuery({
     search: searchQuery,
     startDate:
       startDate !== null
@@ -61,6 +68,34 @@ const EventList = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [isFetching, page, data]);
+
+  const handleRsvp = (selectData) => {
+    if (selectData?.rsvp?.includes(user?._id)) {
+      const inputData = {
+        userId: user?._id,
+        rsvpStatus: "cancel",
+      };
+      const id = selectData?._id;
+      updateRsvp({ inputData, id }).then((res) => {
+        if (res?.selectData) {
+          toast.success(`Successfully cancel request!`);
+          refetch();
+        }
+      });
+    } else {
+      const inputData = {
+        userId: user?._id,
+        rsvpStatus: "attend",
+      };
+      const id = selectData?._id;
+      updateRsvp({ inputData, id }).then((res) => {
+        if (res?.selectData) {
+          toast.success(`Successfully joined!`);
+          refetch();
+        }
+      });
+    }
+  };
 
   return (
     <React.Fragment>
@@ -136,7 +171,16 @@ const EventList = () => {
                 <div>
                   {isAuth ? (
                     <div className="mt-5">
-                      <RsvpButton onClick={() => ""} />
+                      {data?.rsvp?.includes(user?._id) ? (
+                        <button
+                          onClick={() => handleRsvp(data)}
+                          className="text-white bg-blue-400 hover:bg-blue-500 px-3 rounded py-1"
+                        >
+                          Joined
+                        </button>
+                      ) : (
+                        <RsvpButton onClick={() => handleRsvp(data)} />
+                      )}
                     </div>
                   ) : (
                     <div className="mt-5">
