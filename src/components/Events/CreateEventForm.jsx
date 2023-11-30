@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCreateEventMutation } from "../../features/event/eventApi";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import CreateEventCover from "../../assets/createeventcover.jpg";
 
 const CreateEventForm = () => {
   const state = useSelector((state) => state.auth);
@@ -55,7 +56,7 @@ const CreateEventForm = () => {
           <div
             className="hidden bg-no-repeat bg-center lg:block "
             style={{
-              backgroundImage: "url('/src/assets/createeventcover.jpg')",
+              backgroundImage: `url('${CreateEventCover}')`,
             }}
           ></div>
           <div className="flex justify-center">
